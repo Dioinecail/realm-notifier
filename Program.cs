@@ -51,11 +51,19 @@ namespace DungeonNotifier
         private SoundPlayer m_NotifPlayer = new SoundPlayer();
         private List<string> m_NotifSounds = new List<string>();
         private int m_SelectedNotifSoundIndex;
+        private static Mutex mutex = null;
+        private const string mutexId = "RealmDungeonNotifier";
 
 
 
         public Program()
         {
+            var createdNew = false;
+            mutex = new Mutex(true, mutexId, out createdNew);
+
+            if (!createdNew)
+                return;
+
             source = new CancellationTokenSource();
 
             DetectNotifSounds();
